@@ -1,25 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { moviesList, directorsList } from './actions.js';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component { 
+  componentWillMount(){
+   this.props.getMovies(); 
+   this.props.getDirectors();
+  }
+
+  renderMovies = (movies) => (
+    movies ?
+    movies.map(item => (
+      <div>
+        { item.name }
+      </div>
+    )):null
+  ) 
+
+  render() {
+    console.log(this.props);
+    return (
+      <div>
+        {this.renderMovies(this.props.data.movies)}
+      </div>
+    );
+  }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    data:state.movies
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getMovies: () => {
+      dispatch(moviesList())
+    },
+    getDirectors: () => {
+      dispatch(directorsList())
+    }
+      
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
